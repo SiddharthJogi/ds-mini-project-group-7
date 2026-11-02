@@ -4,7 +4,7 @@ from datetime import date
 
 import numpy as np
 import pandas as pd
-import streamlit as st
+import streamlit as st; import altair as alt
 
 import seismic
 
@@ -170,7 +170,7 @@ with tab_stats:
         cumulative = np.array([(mags >= edge).sum() for edge in bins])
         gr = pd.DataFrame({"Magnitude threshold": bins, "Cumulative events": cumulative})
         gr = gr.loc[gr["Cumulative events"] > 0]
-        st.line_chart(gr.set_index("Magnitude threshold"), y="Cumulative events", height=350, color="#126b82", y_scale="log")
+        st.altair_chart(alt.Chart(gr).mark_line(point=True, color="#126b82").encode(x=alt.X("Magnitude threshold:Q", title="Magnitude threshold"), y=alt.Y("Cumulative events:Q", scale=alt.Scale(type="log"), title="Cumulative events (log scale)"), tooltip=["Magnitude threshold:Q", "Cumulative events:Q"]).properties(height=350), use_container_width=True)
         st.caption("Gutenberg–Richter b-value uses the Aki maximum-likelihood estimator above Mc. The chart shows cumulative counts on a logarithmic scale.")
     with rcol:
         st.markdown("**Depth vs. magnitude**")
